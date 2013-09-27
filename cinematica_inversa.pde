@@ -3,7 +3,7 @@ import peasy.*;
 int w = 600;
 int h = 400;
 
-int x=40, y=0, z=60;
+int x=0, y=0, z=0;
 float theta=0;
 
 
@@ -13,13 +13,22 @@ PeasyCam camara;
 
 Nave enterprise;
 brazo mano;
+hexapodo spidy;
+
+boolean onoff= false;
 
 void setup() {
   size( w, h, P3D );
   camara = new PeasyCam(this, 70);
   smooth();
   //  lights();
-  mano = new brazo(100, 80, 50);
+  mano = new brazo(30, 100, 80, 50);
+  spidy = new hexapodo ();
+  spidy.start();
+
+
+
+  //spidy.stop();
 }
 
 void draw() {
@@ -31,8 +40,30 @@ void draw() {
     background(100);
     ejes(100);
   }
-  mano.dibujate();
-  mano.calcularxy(x, y, z, theta);
+  //  mano.dibujate();
+  //suelo  
+ /* beginShape(QUAD);
+  fill(255);
+  stroke(0);
+
+  vertex(  mano.espacio, -mano.alturaH, mano.espacio);
+  vertex( -mano.espacio, -mano.alturaH, mano.espacio);
+  vertex( -mano.espacio, -mano.alturaH, -mano.espacio);
+  vertex(  mano.espacio, -mano.alturaH, -mano.espacio);
+
+  endShape();
+  // fin suelo  */
+  translate(0, 0, 0);
+  spidy.dibujar();
+  //  spidy.sesX(onoff, true);
+
+  //  spidy.adelante(t*2);
+
+  //spidy.adelante(t);
+
+  //spidy.stop(true);
+  //  onof
+//  mano.calcularxy(x, y, z, theta);
 }
 
 
@@ -45,7 +76,6 @@ void keyPressed() {
     x = x-1;
     break;
   case 'd': 
-
     x +=1;
     break;
   case 'w': 
@@ -55,36 +85,24 @@ void keyPressed() {
     y += 1;
     break;
   case 'q' : 
-
     z -= 1;
     break;
   case 'z' : 
-
     z += 1;
     break;
   case 'x' : 
-
     theta += 1;
     break;
   case 'c' : 
-
     theta -= 1;
     break;
 
-  case 'u' : 
-    x=mouseX;
-    break;
-  case 'i' : 
-    y=mouseX;
-    break;
-  case 'o' : 
-    z=mouseX;
-    break;
-  case 'p' : 
-    theta=mouseX;
-    break;
+
+
+
   case ' ' : 
     println("");
+    println("Angulos de rotacion.");
     println ("giro          " + mano.angGiro* mano.grad);
     println ("brazo         " + mano.angBrazo* mano.grad);
     println ("antebrazo     " + mano.angAntebr* mano.grad);
@@ -93,12 +111,32 @@ void keyPressed() {
 
   case 'j' : 
     println(" ");
+    println("Angulos de calculo.");
     println ("alfa          " + mano.alfa * mano.grad);
     println ("beta          " + mano.beta * mano.grad);
     println ("gama          " + mano.gama * mano.grad);
 
     break;
+  case '8':
+    spidy.adelante(t*2);
+    break;
 
+  case '2':
+    spidy.atras(t*2);
+    break;
+
+  case '5':
+    spidy.stop();
+    break;
+
+  case '9':
+    spidy.sesgar(x, y, z);
+    x=0;
+    y=0;
+    z=0;
+    
+
+    break;
 
 
   default:
@@ -109,6 +147,16 @@ void keyPressed() {
     println("Theta: " + theta);
     println("hipo: " + mano.hipotenusa);
     println("espacio: " + mano.espacio );
+    break;
+  }
+}
+void keyReleased() {
+
+
+
+  switch(key) {
+  case 'a':
+    onoff=false;
     break;
   }
 }

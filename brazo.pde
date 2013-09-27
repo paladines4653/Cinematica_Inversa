@@ -16,7 +16,7 @@ class brazo {
   int LMunec;
   int espacio;
 
-
+  boolean inv = false;
 
   //variables a calcular
 
@@ -48,9 +48,9 @@ class brazo {
 
 
 
-  brazo(int L1_init, int L2_init, int L3_init) {
+  brazo(int altura, int L1_init, int L2_init, int L3_init) {
 
-
+    alturaH = altura;
     LBrazo  =  L1_init;
     LAntebr =  L2_init;
     LMunec  =  L3_init;
@@ -62,94 +62,115 @@ class brazo {
     poshombro = new PVector( 0, 0, 0);
     poscodo = new PVector(LBrazo, 0, 0);
     posmuneca = new PVector( LAntebr, 0, 0);
-
+    posfin= new PVector (0, 0, 0);
+    //    calcularxy(20,20,20,0);
     //    ancho = ancho_init;
   }
 
+  void setInv(boolean invertir) {
+    inv = invertir;
+  }
 
+  void setInv() {
+    inv = !inv;
+  }
 
   void calcularxy(PVector pos, float cabeceo_init) {
     calcularxy(pos.x, pos.y, pos.z, cabeceo_init);
   }
 
   void calcularxy(float px, float py, float pz, float cabeceo_init) {
-
-    cabeceo = cabeceo_init;
-
-    boolean menos = false;
-    boolean mas = false;
-    int repeat=0;
-
-    while ( (menos == true) || (mas == true) || (repeat == 0)) {
-
-
-      cabeceo = cabeceo * rad;
-
-      xPrima =  sqrt ( sq(px) + sq(py) );
-      yPrima =  pz;
-
-
-      Afx    =  cos (cabeceo)* LMunec;
-      Afy    =  sin (cabeceo)* LMunec;
-
-      ladoB  = xPrima - Afx;
-      ladoA  = yPrima - Afy - alturaH;
-
-      hipotenusa  = sqrt( sq(ladoA) + sq(ladoB) );
-      //  println("HIPOTENUSA " + hipotenusa);
-
-      alfa    = atan2   (ladoA, ladoB);
-      beta    = acos    ( (sq(LBrazo) - sq(LAntebr) + sq(hipotenusa) ) / ( 2 * LBrazo * hipotenusa) );
-      gama    = acos    ( (sq(LBrazo) + sq(LAntebr) - sq(hipotenusa) ) / ( 2 * LBrazo * LAntebr) );
-
-
-
-      //angulos en grados
-      angBrazo    = (alfa + beta) ;
-      angAntebr   = (-((180*rad) - gama));
-      angMunec    = cabeceo - angBrazo - angAntebr;
-      angGiro     = atan2(py, px);
-
-
-      repeat +=1;
+    if ((posfin.x != px) || (posfin.y != py) || (posfin.z != pz)) {
+        if (inv) {
+          //px=-px;
+        }
       
-//      println("repeat " + repeat);
+      posfin.set(px, py, pz);
 
-      if  ( angMunec*grad < -90 ) {
-        menos = true;
-        mas = false;
-        cabeceo=cabeceo * grad + 1;
-      }
-      else if (angMunec*grad > 90) {
-        mas = true;    
-        menos=false;    
-        cabeceo=cabeceo * grad - 1;
-      }
-      else {
-        mas = false;
-        menos=false;
-      }
+      cabeceo = cabeceo_init;
 
+      boolean menos = false;
+      boolean mas = false;
+      int repeat=0;
+
+      while ( (menos == true) || (mas == true) || (repeat == 0)) {
+
+
+        cabeceo = cabeceo * rad;
+
+        xPrima =  sqrt ( sq(px) + sq(py) );
+        yPrima =  pz;
+
+
+        Afx    =  cos (cabeceo)* LMunec;
+        Afy    =  sin (cabeceo)* LMunec;
+
+        ladoB  = xPrima - Afx;
+        ladoA  = yPrima - Afy - alturaH;
+
+        hipotenusa  = sqrt( sq(ladoA) + sq(ladoB) );
+        //  println("HIPOTENUSA " + hipotenusa);
+
+        alfa    = atan2   (ladoA, ladoB);
+        beta    = acos    ( (sq(LBrazo) - sq(LAntebr) + sq(hipotenusa) ) / ( 2 * LBrazo * hipotenusa) );
+        gama    = acos    ( (sq(LBrazo) + sq(LAntebr) - sq(hipotenusa) ) / ( 2 * LBrazo * LAntebr) );
+
+
+
+        //angulos en grados
+        angBrazo    = (alfa + beta) ;
+        angAntebr   = (-((180*rad) - gama));
+        angMunec    = cabeceo - angBrazo - angAntebr;
+        angGiro     = atan2(py, px);
+
+        if (inv) {
+          angGiro = - angGiro;
+
+        }
+
+        repeat +=1;
+
+        //      println("repeat " + repeat);
+
+        if  ( angMunec*grad < -90 ) {
+          menos = true;
+          mas = false;
+          cabeceo=cabeceo * grad + 1;
+        }
+        else if (angMunec*grad > 90) {
+          mas = true;    
+          menos=false;    
+          cabeceo=cabeceo * grad - 1;
+        }
+        else {
+          mas = false;
+          menos=false;
+        }
+      }
     }
-//          println("cabeceo "+cabeceo*grad);
+    //          println("cabeceo "+cabeceo*grad);
   }
 
   void dibujate() {
 
-
+    if (inv) {
+      rotateY(180 * PI/180);
+    }
 
     beginShape(QUAD);
     fill(255);
     stroke(0);
 
-    vertex(  espacio, -alturaH, espacio);
-    vertex( -espacio, -alturaH, espacio);
-    vertex( -espacio, -alturaH, -espacio);
-    vertex(  espacio, -alturaH, -espacio);
+    /* vertex(  espacio, -alturaH, espacio);
+     vertex( -espacio, -alturaH, espacio);
+     vertex( -espacio, -alturaH, -espacio);
+     vertex(  espacio, -alturaH, -espacio);*/
 
     endShape();
 
     noStroke();
+
+
 
     // HOMBRO ##########################################################
     fill (0, 0, 200);
