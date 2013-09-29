@@ -46,6 +46,7 @@ void draw() {
 
   if (mousePressed) {
     background(100);
+    spidy.moverpata(4, x,y,z);
     ejes(100);
   }
   //  mano.dibujate();
@@ -71,15 +72,15 @@ void draw() {
   //  println(reloj.tiempo());
 
   angulos = (spidy.printAng());
+println(angulos [2][2]);
 
-
-
+/*
   if (reloj.temporizador(1000)) {
     spidy.sesgar(x, y, z);
     x=0;
     y=0;
     z=0;
-  }
+  }*/
 }
 
 

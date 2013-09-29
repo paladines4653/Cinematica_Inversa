@@ -1,3 +1,17 @@
+//************* proximos pasos**************//
+/* 
+# coordinar el movimiento del hexapodo con un tiempo.
+# arreglar el saveAng(); para no guardar posiciones NaN
+# arraylist de alternos a y b
+    for q recorra patas,
+      alternosA = segundo for : (j= 0; j < numpatas; j +=4){if(j==i){add.arraylist (j)}; if(i==(j-1)){add.arraylist (j-1)}    }
+      alternosB = segundo for : (j= 2; j < numpatas; j +=4){if(j==i){add.arraylist (j)}; if(i==(j-1)){add.arraylist (j-1)}    }
+# movimientos de (!inv & inv).
+# agregar ruido.
+
+*/
+
+
 class hexapodo {
 
   int l1 = 20;
@@ -14,7 +28,19 @@ class hexapodo {
   ArrayList <brazo> lasPatas ;
 
   void hexapodo() {
-    println("hexapodo");
+  }
+
+  void setNumpatas(int in) {
+    if (in%2 == 0) {
+      numpatas= in;
+    }
+    else {
+      numpatas= in+1;
+    }
+  }
+
+  void setAmp (float in) {
+    amp = abs(in);
   }
 
   void start() {
@@ -56,52 +82,27 @@ class hexapodo {
   }
 
 
-  // no muy clara falta mejorar reeeesto
-  void sesX(boolean sesx, boolean lado) {
-    for (int i = 0 ; i < lasPatas.size() ; i++) {
-      brazo  pata = lasPatas.get(i);
-      //      sesx =     pata.posfin.x  +  sesx;
-      //      lado = lado/( abs(lado) );
-      float x=pata.posfin.x;
-      if (sesx) {
-        if (lado) {
-          if (pata.inv) {
-            x = pata.posfin.x+1;
-          }
-          else {
-            x = pata.posfin.x-1;
-          }
-        }
-        else {
-          if (pata.inv == false) {
-            x = pata.posfin.x+1;
-          }
-          else {
-            x = pata.posfin.x-1;
-          }
-        }
-        pata.calcularxy(x, 0, 0, 0);
-      }
-    }
-  }
-
 
   void saveAng() {
     for (int i = 0 ; i < lasPatas.size() ; i++) {
-      brazo  pata = lasPatas.get(i);
-      hexAngulos[i][0]= i;
-      hexAngulos[i][1]= pata.angGiro;
-      hexAngulos[i][2]= pata. angBrazo;
-      hexAngulos[i][3]= pata.angAntebr;
+      saveAng(i) ;
     }
   }
+
   void saveAng(int in) {
     brazo pata = lasPatas.get(in);
-    hexAngulos[in][in]= in;
-    hexAngulos[in][2] = pata.angGiro;
-    hexAngulos[in][3] = pata.angBrazo;
-    hexAngulos[in][4] = pata.angAntebr;
+    hexAngulos[in][0]= in;
+    if (pata.angGiro == NaN) {
+      hexAngulos[in][1] = pata.angGiro;
+    }
+    if (pata.angBrazo != NaN) {
+      hexAngulos[in][2] = pata.angBrazo;
+    }
+    if (pata.angAntebr != NaN) {
+      hexAngulos[in][3] = pata.angAntebr;
+    }
   }
+
 
 
   float[][] printAng() {
@@ -114,6 +115,8 @@ class hexapodo {
     float px;
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
+
+
       if (pata.inv == true) {
         px=-x;
       }
@@ -124,6 +127,26 @@ class hexapodo {
     }
     saveAng();
   }
+
+
+  // MOVER UNA SOLA PATA
+  void moverpata(int n, float x, float y, float z) {
+    if ((n > 0) && (n < lasPatas.size())) {
+      brazo pata = lasPatas.get(n-1);
+      pata.calcularxy(x, y, z, 0);
+    }
+  }
+
+  void moverpata(int n, int f, float x, float y, float z) {
+
+    if ((n > 0) && (n <= lasPatas.size()) && (f>n) && (f<= lasPatas.size())  ) {
+      for (int i = n-1 ; i < (f) ; i++ ) {
+        brazo pata = lasPatas.get(i);
+        pata.calcularxy(x, y, z, 0);
+      }
+    }
+  }
+
 
   // RESULTADO SOBRESALIENTE (MEJORAR)(pasar constantes a variables)(seleccion de servos para infinitas patas)
   void adelante(float t) {
