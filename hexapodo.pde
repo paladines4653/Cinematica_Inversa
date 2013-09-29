@@ -5,6 +5,10 @@ class hexapodo {
   int l3 = 40;
   int   numpatas = 6;
 
+  float amp = 15;
+
+  float [][] hexAngulos = new float [numpatas][4];  
+
 
   // array <clase> nombre del arreglo
   ArrayList <brazo> lasPatas ;
@@ -82,20 +86,43 @@ class hexapodo {
   }
 
 
-  //RESULTADO ACEPTABLE (MEJORAR)
-  void sesgar(float x, float y, float z) {
+  void saveAng() {
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
-//      x=pata.posfin.x + x;
-  //    y=pata.posfin.y + y;
-    //  z=pata.posfin.z + z;
-
-      if (pata.inv == true) {
-        // (REMAL PLANTEADO)        pata.angAntebr= pata.angAntebr * -1;
-//        x=-x;
-      }
-      pata.calcularxy(pata.posfin.x + x,pata.posfin.y + y,pata.posfin.z + z, 0);
+      hexAngulos[i][0]= i;
+      hexAngulos[i][1]= pata.angGiro;
+      hexAngulos[i][2]= pata. angBrazo;
+      hexAngulos[i][3]= pata.angAntebr;
     }
+  }
+  void saveAng(int in) {
+    brazo pata = lasPatas.get(in);
+    hexAngulos[in][in]= in;
+    hexAngulos[in][2] = pata.angGiro;
+    hexAngulos[in][3] = pata.angBrazo;
+    hexAngulos[in][4] = pata.angAntebr;
+  }
+
+
+  float[][] printAng() {
+    return ( hexAngulos );
+  }
+
+
+  //RESULTADO ACEPTABLE (MEJORAR)
+  void sesgar(float x, float y, float z) {
+    float px;
+    for (int i = 0 ; i < lasPatas.size() ; i++) {
+      brazo  pata = lasPatas.get(i);
+      if (pata.inv == true) {
+        px=-x;
+      }
+      else {
+        px = x;
+      }
+      pata.calcularxy(pata.posfin.x + px, pata.posfin.y + y, pata.posfin.z + z, 0);
+    }
+    saveAng();
   }
 
   // RESULTADO SOBRESALIENTE (MEJORAR)(pasar constantes a variables)(seleccion de servos para infinitas patas)
@@ -104,15 +131,91 @@ class hexapodo {
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
 
+
+
       if ((i==0)|| (i==3) || (i==4)) {
         desfase=PI;
       }
       else {
         desfase =0;
       }
-      pata.calcularxy(40, 15*sin(t+desfase), 15*cos(t+desfase) - 20, 0);
+
+      pata.calcularxy(40, amp*sin(t+desfase), amp*cos(t+desfase) - 20, 0);
     }
+    saveAng();
   }
+  // AVANZA TOMANDO UNA CURVA PARA EL LADO DERECHO PRIMER  adelanteD(  , porcetaje de giro a la derecha );
+  void adelanteD(float t, float D) {
+    float desfase;
+
+    if (D <= 0) {
+      D = 1;
+    }
+    else if (D > 100 ) {
+      D = 100;
+      //D = amp * D / 100 ;
+    }
+
+    for (int i = 0 ; i < lasPatas.size() ; i++) {
+      brazo  pata = lasPatas.get(i);
+
+
+
+      if ((i==0)|| (i==3) || (i==4)) {
+        desfase=PI;
+      }
+      else {
+        desfase =0;
+      }
+      float amp2;
+      if (pata.inv) {
+        amp2 = 1;
+      }
+      else {
+        amp2 = (1-(D/100));
+      }
+      println(amp2);
+      pata.calcularxy(40, amp * amp2 *sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+    }
+    saveAng();
+  }
+
+  // AVANZA TOMANDO UNA CURVA PARA EL LADO IZQUIERDO PRIMER  adelanteD(  , porcetaje de giro a la izquierda );
+  void adelanteI(float t, float D) {
+    float desfase;
+
+    if (D <= 0) {
+      D = 1;
+    }
+    else if (D > 100 ) {
+      D = 100;
+      //D = amp * D / 100 ;
+    }
+
+    for (int i = 0 ; i < lasPatas.size() ; i++) {
+      brazo  pata = lasPatas.get(i);
+
+
+
+      if ((i==0)|| (i==3) || (i==4)) {
+        desfase=PI;
+      }
+      else {
+        desfase =0;
+      }
+      float amp2;
+      if (pata.inv == false) {
+        amp2 = 1;
+      }
+      else {
+        amp2 = (1-(D/100)) ;
+      }
+
+      pata.calcularxy(40, amp * amp2 *sin(t+desfase), amp * cos(t+desfase) - 20, 0);
+    }
+    saveAng();
+  }
+
 
   // RESULTADO SOBRESALIENTE (MEJORAR) (pasar constantes a variables)(seleccion de servos para infinitas patas)
   void atras(float t) {
@@ -126,19 +229,58 @@ class hexapodo {
       else {
         desfase =0;
       }
-      pata.calcularxy(40, 15*cos(t+desfase), 15*sin(t+desfase) - 20, 0);
+      pata.calcularxy(40, amp*cos(t+desfase), amp*sin(t+desfase) - 20, 0);
     }
+    saveAng();
   }
+  // ROTACION HACIA LA DERECHA 
+  void rotarD(float t) {
+    float desfase;
+    for (int i = 0 ; i < lasPatas.size() ; i++) {
+      brazo  pata = lasPatas.get(i);
+
+      if ((i==0)|| (i==3) || (i==4)) {
+        desfase=PI;
+      }
+      else {
+        desfase =0;
+      }
+      if (pata.inv) {
+        pata.calcularxy(40, amp*sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+      }
+      else {
+        pata.calcularxy(40, amp*cos(t+desfase), amp*sin(t+desfase) - 20, 0);
+      }
+    }
+    saveAng();
+  }
+  // ROTACION HACIA LA IZQUIERDA
+
+  void rotarI(float t) {
+    float desfase;
+    for (int i = 0 ; i < lasPatas.size() ; i++) {
+      brazo  pata = lasPatas.get(i);
+
+      if ((i==0)|| (i==3) || (i==4)) {
+        desfase=PI;
+      }
+      else {
+        desfase =0;
+      }
+      if (pata.inv) {
+        pata.calcularxy(40, amp*cos(t+desfase), amp*sin(t+desfase) - 20, 0);
+      }
+      else {
+        pata.calcularxy(40, amp*sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+      }
+    }
+    saveAng();
+  }
+
+
 
   //RESULTADO CAMBIANTE, FUNCIONA EN EL DRAW Y CREO QUE MAL (POR REPLANTEAR) 
   void stop() {
-    /*
-    for (int i = 0 ; i < lasPatas.size() ; i++) {
-     brazo  pata = lasPatas.get(i);
-     pata.calcularxy(40, 30, 0, 0);
-     }*/
-
-
     for (int i = 0 ; i < 2 ; i++) {
       brazo pata = lasPatas.get(i);
       pata.calcularxy(40, 20, -20, 0);
@@ -152,6 +294,7 @@ class hexapodo {
       brazo pata = lasPatas.get(i);
       pata.calcularxy(40, -20, -20, 0);
     }
+    saveAng();
   }
 }
 

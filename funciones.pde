@@ -82,54 +82,5 @@ noStroke();
 }
 
 
-/*
 
- // HOMBRO
- void dicujando() {
- beginShape(QUAD);
- 
- vertex(  espacio, -alturaH, espacio);
- vertex( -espacio, -alturaH, espacio);
- vertex( -espacio, -alturaH, -espacio);
- vertex(  espacio, -alturaH, -espacio);
- 
- endShape();
- 
- rotate(0, angGiro, 0);
- 
- beginShape(QUAD);
- vertex( 40, 0, -60 );
- vertex(-40, 0, -60 );
- vertex(-40, 0, 60 );
- vertex( 40, 0, 60 );    
- 
- vertex( 40, -alturaH, 60 );
- vertex(-40, -alturaH, 60 );
- vertex(-40, -alturaH, -60 );
- vertex( 40, -alturaH, -60 );
- 
- vertex( 40, 0, 60 );
- vertex(-40, 0, 60 );
- vertex(-40, -alturaH, 60 );
- vertex( 40, -alturaH, 60 );
- 
- vertex( 40, -alturaH, -60 );
- vertex(-40, -alturaH, -60 );
- vertex(-40, 0, -60 );
- vertex( 40, 0, -60 );
- 
- vertex(-40, 0, 60 );
- vertex(-40, 0, -60 );
- vertex(-40, -alturaH, -60 );
- vertex(-40, -alturaH, 60 );
- 
- vertex(40, 0, -60 );
- vertex(40, 0, 60 );
- vertex(40, -alturaH, 60 );
- vertex(40, -alturaH, -60 ); 
- 
- endShape();
- }
- 
- */
 

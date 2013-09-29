@@ -6,10 +6,13 @@ int h = 400;
 int x=0, y=0, z=0;
 float theta=0;
 
+float[][] angulos;
 
 float t = 0 ; 
 
 PeasyCam camara;
+
+Timer reloj;
 
 Nave enterprise;
 brazo mano;
@@ -22,12 +25,17 @@ void setup() {
   camara = new PeasyCam(this, 70);
   smooth();
   //  lights();
+
+
+  reloj = new Timer();
   mano = new brazo(30, 100, 80, 50);
   spidy = new hexapodo ();
   spidy.start();
 
 
+  float [][] angulos = new float [spidy.numpatas][4];  
 
+  //reloj.start();
   //spidy.stop();
 }
 
@@ -42,28 +50,36 @@ void draw() {
   }
   //  mano.dibujate();
   //suelo  
- /* beginShape(QUAD);
-  fill(255);
-  stroke(0);
+  /* beginShape(QUAD);
+   fill(255);
+   stroke(0);
+   
+   vertex(  mano.espacio, -mano.alturaH, mano.espacio);
+   vertex( -mano.espacio, -mano.alturaH, mano.espacio);
+   vertex( -mano.espacio, -mano.alturaH, -mano.espacio);
+   vertex(  mano.espacio, -mano.alturaH, -mano.espacio);
+   
+   endShape();
+   // fin suelo  */
 
-  vertex(  mano.espacio, -mano.alturaH, mano.espacio);
-  vertex( -mano.espacio, -mano.alturaH, mano.espacio);
-  vertex( -mano.espacio, -mano.alturaH, -mano.espacio);
-  vertex(  mano.espacio, -mano.alturaH, -mano.espacio);
-
-  endShape();
-  // fin suelo  */
-  translate(0, 0, 0);
   spidy.dibujar();
+
   //  spidy.sesX(onoff, true);
-
   //  spidy.adelante(t*2);
-
   //spidy.adelante(t);
-
   //spidy.stop(true);
-  //  onof
-//  mano.calcularxy(x, y, z, theta);
+  //  println(reloj.tiempo());
+
+  angulos = (spidy.printAng());
+
+
+
+  if (reloj.temporizador(1000)) {
+    spidy.sesgar(x, y, z);
+    x=0;
+    y=0;
+    z=0;
+  }
 }
 
 
@@ -120,21 +136,33 @@ void keyPressed() {
   case '8':
     spidy.adelante(t*2);
     break;
-
   case '2':
     spidy.atras(t*2);
+    break;
+  case '7':
+    spidy.adelanteI(t*2, theta);
+    break;
+  case '9':
+    spidy.adelanteD(t*2, theta);
+    break;
+  case '6':
+    spidy.rotarD(t*2);
+    break;
+
+  case '4':
+    spidy.rotarI(t*2);
     break;
 
   case '5':
     spidy.stop();
     break;
 
-  case '9':
+  case '0':
     spidy.sesgar(x, y, z);
     x=0;
     y=0;
     z=0;
-    
+
 
     break;
 
