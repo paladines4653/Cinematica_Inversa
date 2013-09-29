@@ -4,7 +4,7 @@ class brazo {
   float grad  = 180/PI;
 
 
-
+  float [] angulos = new float [4];  
 
   //  color c;
   float ancho = 2;
@@ -75,16 +75,26 @@ class brazo {
     inv = !inv;
   }
 
+  void saveAng() {
+
+    if ((angGiro != Float.NaN) && (angBrazo != Float.NaN) && (angAntebr != Float.NaN) && (angMunec != Float.NaN)) {
+      angulos[0] = angGiro;
+      angulos[1] = angBrazo;
+      angulos[2] = angAntebr;
+      angulos[3] = angMunec;
+    }
+  }
+
   void calcularxy(PVector pos, float cabeceo_init) {
     calcularxy(pos.x, pos.y, pos.z, cabeceo_init);
   }
 
   void calcularxy(float px, float py, float pz, float cabeceo_init) {
     if ((posfin.x != px) || (posfin.y != py) || (posfin.z != pz)) {
-        if (inv) {
-          //px=-px;
-        }
-      
+      if (inv) {
+        //px=-px;
+      }
+
       posfin.set(px, py, pz);
 
       cabeceo = cabeceo_init;
@@ -125,7 +135,6 @@ class brazo {
 
         if (inv) {
           angGiro = - angGiro;
-
         }
 
         repeat +=1;
@@ -148,8 +157,14 @@ class brazo {
         }
       }
     }
-    //          println("cabeceo "+cabeceo*grad);
+
+    saveAng();
   }
+
+  float[] printAng() {
+    return(angulos);
+  }
+
 
   void dibujate() {
 
@@ -174,7 +189,7 @@ class brazo {
 
     // HOMBRO ##########################################################
     fill (0, 0, 200);
-    rotateY(angGiro);
+    rotateY(angulos[0]);
     //    translate(0, alturaH, 0);
     caja(ancho, alturaH, ancho);
 
@@ -184,7 +199,7 @@ class brazo {
     stroke(0);
     translate(0, alturaH, 0);
     //rotacion del angulo brazo sobre el eje z
-    rotateZ(angBrazo);
+    rotateZ(angulos[1]);
 
     translate(LBrazo, 0, 0);
     caja(LBrazo, ancho, ancho);
@@ -192,7 +207,7 @@ class brazo {
     //ANTEBRAZO ########################################################
     fill (200, 200, 0);
     translate(LBrazo, 0, 0);
-    rotateZ(angAntebr);
+    rotateZ(angulos[2]);
     translate(LAntebr, 0, 0);
     caja(LAntebr, ancho/4*3, ancho/4*3);
 
@@ -202,7 +217,7 @@ class brazo {
 
     fill (0, 200, 0);
     translate(LAntebr, 0, 0);
-    rotateZ(angMunec);
+    rotateZ(angulos[3]);
     translate(LMunec, 0, 0);
     caja(LMunec, ancho/2, ancho/2);
   }

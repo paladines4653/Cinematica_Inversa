@@ -1,4 +1,4 @@
-import peasy.*;
+ import peasy.*;
 
 int w = 600;
 int h = 400;
@@ -22,6 +22,8 @@ boolean onoff= false;
 
 void setup() {
   size( w, h, P3D );
+  
+
   camara = new PeasyCam(this, 70);
   smooth();
   //  lights();
@@ -33,7 +35,7 @@ void setup() {
   spidy.start();
 
 
-  float [][] angulos = new float [spidy.numpatas][4];  
+//  float [][] angulos = new float [spidy.numpatas][4];  
 
   //reloj.start();
   //spidy.stop();
@@ -46,7 +48,9 @@ void draw() {
 
   if (mousePressed) {
     background(100);
-    spidy.moverpata(4, x,y,z);
+//    spidy.moverpata(4, x,y,z);
+
+
     ejes(100);
   }
   //  mano.dibujate();
@@ -72,7 +76,7 @@ void draw() {
   //  println(reloj.tiempo());
 
   angulos = (spidy.printAng());
-println(angulos [2][2]);
+//println(angulos [2][2]);
 
 /*
   if (reloj.temporizador(1000)) {
@@ -163,6 +167,11 @@ void keyPressed() {
     x=0;
     y=0;
     z=0;
+    
+    println(spidy.hexAngulos[(int)theta][0]);
+    println(spidy.hexAngulos[(int)theta][1]);
+    println(spidy.hexAngulos[(int)theta][2]);
+    println(spidy.hexAngulos[(int)theta][3]);
 
 
     break;

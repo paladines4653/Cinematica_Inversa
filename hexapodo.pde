@@ -9,6 +9,7 @@
 # movimientos de (!inv & inv).
 # agregar ruido.
 
+
 */
 
 
@@ -57,9 +58,6 @@ class hexapodo {
     stop();
   }
 
-
-
-
   void dibujar() {
 
     for (int i = 0 ; i < lasPatas.size() ; i++) {
@@ -92,15 +90,20 @@ class hexapodo {
   void saveAng(int in) {
     brazo pata = lasPatas.get(in);
     hexAngulos[in][0]= in;
-    if (pata.angGiro == NaN) {
+
+
+
+    if (pata.angGiro != Float.NaN) {
       hexAngulos[in][1] = pata.angGiro;
     }
-    if (pata.angBrazo != NaN) {
+
+    if (pata.angBrazo != Float.NaN) {
       hexAngulos[in][2] = pata.angBrazo;
     }
-    if (pata.angAntebr != NaN) {
+    if (pata.angAntebr != Float.NaN) {
       hexAngulos[in][3] = pata.angAntebr;
     }
+
   }
 
 
