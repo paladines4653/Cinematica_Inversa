@@ -1,7 +1,7 @@
- import peasy.*;
+import peasy.*;
 
-int w = 600;
-int h = 400;
+int w = 1024;
+int h = 768;
 
 int x=0, y=0, z=0;
 float theta=0;
@@ -18,11 +18,13 @@ Nave enterprise;
 brazo mano;
 hexapodo spidy;
 
-boolean onoff= false;
+//boolean onoff= false;
 
 void setup() {
   size( w, h, P3D );
-  
+
+
+  help();
 
   camara = new PeasyCam(this, 70);
   smooth();
@@ -35,7 +37,9 @@ void setup() {
   spidy.start();
 
 
-//  float [][] angulos = new float [spidy.numpatas][4];  
+
+
+  //  float [][] angulos = new float [spidy.numpatas][4];  
 
   //reloj.start();
   //spidy.stop();
@@ -44,11 +48,13 @@ void setup() {
 void draw() {
   background(150);
 
-  t = millis() / 1000.0 ;
+
 
   if (mousePressed) {
     background(100);
-//    spidy.moverpata(4, x,y,z);
+    //    spidy.moverpata(4, x,y,z);
+
+
 
 
     ejes(100);
@@ -75,21 +81,24 @@ void draw() {
   //spidy.stop(true);
   //  println(reloj.tiempo());
 
-  angulos = (spidy.printAng());
-//println(angulos [2][2]);
+  //  angulos = (spidy.printAng());
+  //println(angulos [2][2]);
 
-/*
+  /*
   if (reloj.temporizador(1000)) {
-    spidy.sesgar(x, y, z);
-    x=0;
-    y=0;
-    z=0;
-  }*/
+   spidy.sesgar(x, y, z);
+   x=0;
+   y=0;
+   z=0;
+   }*/
 }
 
 
 
 void keyPressed() {
+
+
+
   //println(key);
   switch(key) {
 
@@ -118,7 +127,9 @@ void keyPressed() {
     theta -= 1;
     break;
 
-
+  case 't' :
+    spidy.setPeriodo(2);
+    break;
 
 
   case ' ' : 
@@ -139,23 +150,23 @@ void keyPressed() {
 
     break;
   case '8':
-    spidy.adelante(t*2);
+    spidy.adelante();
     break;
   case '2':
-    spidy.atras(t*2);
+    spidy.atras();
     break;
   case '7':
-    spidy.adelanteI(t*2, theta);
+    spidy.adelanteI(theta);
     break;
   case '9':
-    spidy.adelanteD(t*2, theta);
+    spidy.adelanteD(theta);
     break;
   case '6':
-    spidy.rotarD(t*2);
+    spidy.rotarD();
     break;
 
   case '4':
-    spidy.rotarI(t*2);
+    spidy.rotarI();
     break;
 
   case '5':
@@ -167,12 +178,6 @@ void keyPressed() {
     x=0;
     y=0;
     z=0;
-    
-    println(spidy.hexAngulos[(int)theta][0]);
-    println(spidy.hexAngulos[(int)theta][1]);
-    println(spidy.hexAngulos[(int)theta][2]);
-    println(spidy.hexAngulos[(int)theta][3]);
-
 
     break;
 
@@ -194,7 +199,7 @@ void keyReleased() {
 
   switch(key) {
   case 'a':
-    onoff=false;
+
     break;
   }
 }

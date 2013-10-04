@@ -77,13 +77,25 @@ class brazo {
 
   void saveAng() {
 
-    if ((angGiro != Float.NaN) && (angBrazo != Float.NaN) && (angAntebr != Float.NaN) && (angMunec != Float.NaN)) {
+
+    String strGiro = "" + angGiro;
+    String strBrazo = "" + angBrazo;
+    String strAntebr = "" + angAntebr;
+    String strMunec = "" + angMunec;
+
+
+
+    if ((strGiro.equals("NaN")) || (strBrazo.equals("NaN")) || (strAntebr.equals("NaN")) || (strMunec.equals("NaN")) ) {
+//      println("Pata numero " + (in+1) + " no puede llegar a destino");
+    } 
+    else {
       angulos[0] = angGiro;
       angulos[1] = angBrazo;
       angulos[2] = angAntebr;
       angulos[3] = angMunec;
     }
   }
+
 
   void calcularxy(PVector pos, float cabeceo_init) {
     calcularxy(pos.x, pos.y, pos.z, cabeceo_init);

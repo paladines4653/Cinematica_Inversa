@@ -1,16 +1,16 @@
 //************* proximos pasos**************//
 /* 
-# coordinar el movimiento del hexapodo con un tiempo.
-# arreglar el saveAng(); para no guardar posiciones NaN
-# arraylist de alternos a y b
-    for q recorra patas,
-      alternosA = segundo for : (j= 0; j < numpatas; j +=4){if(j==i){add.arraylist (j)}; if(i==(j-1)){add.arraylist (j-1)}    }
-      alternosB = segundo for : (j= 2; j < numpatas; j +=4){if(j==i){add.arraylist (j)}; if(i==(j-1)){add.arraylist (j-1)}    }
-# movimientos de (!inv & inv).
-# agregar ruido.
-
-
-*/
+ # coordinar el movimiento del hexapodo con un tiempo. coronado
+ # arreglar el saveAng(); para no guardar posiciones NaN coronado
+ # arraylist de alternos a y b nona
+ for q recorra patas,
+ alternosA = segundo for : (j= 0; j < numpatas; j +=4){if(j==i){add.arraylist (j)}; if(i==(j-1)){add.arraylist (j-1)}    }
+ alternosB = segundo for : (j= 2; j < numpatas; j +=4){if(j==i){add.arraylist (j)}; if(i==(j-1)){add.arraylist (j-1)}    }
+ # movimientos de (!inv & inv).
+ # agregar ruido.
+ 
+ 
+ */
 
 
 class hexapodo {
@@ -18,14 +18,14 @@ class hexapodo {
   int l1 = 20;
   int l2 = 30;
   int l3 = 40;
-  int   numpatas = 6;
+  int numpatas = 6;
 
   float amp = 15;
 
-  float [][] hexAngulos = new float [numpatas][4];  
-
-
-  // array <clase> nombre del arreglo
+  float periodo = 1000;
+  float w= (2*PI)/periodo;
+  float [][] hexAngulos = new float [numpatas][4];  ;
+  //ArrayList <clase> nombre del arreglo
   ArrayList <brazo> lasPatas ;
 
   void hexapodo() {
@@ -38,6 +38,11 @@ class hexapodo {
     else {
       numpatas= in+1;
     }
+  }
+
+  void setPeriodo(float in) {
+    periodo = periodo * in;
+    w= (2*PI)/periodo;
   }
 
   void setAmp (float in) {
@@ -63,7 +68,6 @@ class hexapodo {
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
 
-
       pushMatrix();
       if (i%2 != 0) {
         translate(-40, 0, -40);
@@ -85,27 +89,38 @@ class hexapodo {
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       saveAng(i) ;
     }
+    println("");
   }
+
+
+
+
 
   void saveAng(int in) {
     brazo pata = lasPatas.get(in);
-    hexAngulos[in][0]= in;
+
+
+    String strGiro = "" + pata.angGiro;
+    String strBrazo = "" + pata.angBrazo;
+    String strAntebr = "" + pata.angAntebr;
 
 
 
-    if (pata.angGiro != Float.NaN) {
+    if ((strGiro.equals("NaN")) || (strBrazo.equals("NaN")) || (strAntebr.equals("NaN")) ) {
+      println("Pata numero " + (in+1) + " no puede llegar a destino");
+    } 
+    else {
+      hexAngulos[in][0]= in;
       hexAngulos[in][1] = pata.angGiro;
-    }
-
-    if (pata.angBrazo != Float.NaN) {
       hexAngulos[in][2] = pata.angBrazo;
-    }
-    if (pata.angAntebr != Float.NaN) {
       hexAngulos[in][3] = pata.angAntebr;
+      println("pata numero " + (in+1) + " OK");
+
+      println(hexAngulos[in][1]);
+      println(hexAngulos[in][2]);
+      println(hexAngulos[in][3]);
     }
-
   }
-
 
 
   float[][] printAng() {
@@ -152,13 +167,12 @@ class hexapodo {
 
 
   // RESULTADO SOBRESALIENTE (MEJORAR)(pasar constantes a variables)(seleccion de servos para infinitas patas)
-  void adelante(float t) {
+  void adelante() {
+    //    setPeriodo(in);
+    float t = millis()%periodo;
     float desfase;
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
-
-
-
       if ((i==0)|| (i==3) || (i==4)) {
         desfase=PI;
       }
@@ -166,12 +180,16 @@ class hexapodo {
         desfase =0;
       }
 
-      pata.calcularxy(40, amp*sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+      pata.calcularxy(40, amp*sin((t*w)+desfase), amp*cos((t*w)+desfase) - 20, 0);
     }
     saveAng();
   }
+
+
+
   // AVANZA TOMANDO UNA CURVA PARA EL LADO DERECHO PRIMER  adelanteD(  , porcetaje de giro a la derecha );
-  void adelanteD(float t, float D) {
+  void adelanteD(float D) {
+    float t = millis()%periodo;
     float desfase;
 
     if (D <= 0) {
@@ -201,15 +219,15 @@ class hexapodo {
         amp2 = (1-(D/100));
       }
       println(amp2);
-      pata.calcularxy(40, amp * amp2 *sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+      pata.calcularxy(40, amp * amp2 *sin((t*w)+desfase), amp*cos((t*w)+desfase) - 20, 0);
     }
     saveAng();
   }
 
   // AVANZA TOMANDO UNA CURVA PARA EL LADO IZQUIERDO PRIMER  adelanteD(  , porcetaje de giro a la izquierda );
-  void adelanteI(float t, float D) {
+  void adelanteI(float D) {
     float desfase;
-
+    float t = millis()%periodo;
     if (D <= 0) {
       D = 1;
     }
@@ -237,15 +255,16 @@ class hexapodo {
         amp2 = (1-(D/100)) ;
       }
 
-      pata.calcularxy(40, amp * amp2 *sin(t+desfase), amp * cos(t+desfase) - 20, 0);
+      pata.calcularxy(40, amp * amp2 *sin((t*w)+desfase), amp * cos((t*w)+desfase) - 20, 0);
     }
     saveAng();
   }
 
 
   // RESULTADO SOBRESALIENTE (MEJORAR) (pasar constantes a variables)(seleccion de servos para infinitas patas)
-  void atras(float t) {
+  void atras() {
     float desfase;
+    float t = millis()%periodo;
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
 
@@ -255,12 +274,13 @@ class hexapodo {
       else {
         desfase =0;
       }
-      pata.calcularxy(40, amp*cos(t+desfase), amp*sin(t+desfase) - 20, 0);
+      pata.calcularxy(40, amp*cos((t*w)+desfase), amp*sin((t*w)+desfase) - 20, 0);
     }
     saveAng();
   }
   // ROTACION HACIA LA DERECHA 
-  void rotarD(float t) {
+  void rotarD() {
+    float t = millis()%periodo;
     float desfase;
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
@@ -272,17 +292,18 @@ class hexapodo {
         desfase =0;
       }
       if (pata.inv) {
-        pata.calcularxy(40, amp*sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+        pata.calcularxy(40, amp*sin((t*w)+desfase), amp*cos((t*w)+desfase) - 20, 0);
       }
       else {
-        pata.calcularxy(40, amp*cos(t+desfase), amp*sin(t+desfase) - 20, 0);
+        pata.calcularxy(40, amp*cos((t*w)+desfase), amp*sin((t*w)+desfase) - 20, 0);
       }
     }
     saveAng();
   }
   // ROTACION HACIA LA IZQUIERDA
 
-  void rotarI(float t) {
+  void rotarI() {
+    float t = millis()%periodo;
     float desfase;
     for (int i = 0 ; i < lasPatas.size() ; i++) {
       brazo  pata = lasPatas.get(i);
@@ -294,10 +315,10 @@ class hexapodo {
         desfase =0;
       }
       if (pata.inv) {
-        pata.calcularxy(40, amp*cos(t+desfase), amp*sin(t+desfase) - 20, 0);
+        pata.calcularxy(40, amp*cos((t*w)+desfase), amp*sin((t*w)+desfase) - 20, 0);
       }
       else {
-        pata.calcularxy(40, amp*sin(t+desfase), amp*cos(t+desfase) - 20, 0);
+        pata.calcularxy(40, amp*sin((t*w)+desfase), amp*cos((t*w)+desfase) - 20, 0);
       }
     }
     saveAng();
